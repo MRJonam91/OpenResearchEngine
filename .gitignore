@@ -1,0 +1,31 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data, imports, and generated reports
+/data/
+/imports/
+/reports/
+/tmp/
+
+# JavaScript / Python build output (stack is not selected yet)
+node_modules/
+dist/
+build/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Coverage and logs
+coverage/
+*.log
