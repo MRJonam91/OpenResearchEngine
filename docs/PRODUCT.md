@@ -1,5 +1,13 @@
 # Product brief
 
+## Contratto 1.0 / 1.0 contract
+
+La 1.0 offre importazione locale, fonti e passaggi conservati, ricerca testuale e semantica opzionale, proposte AI citate, confronto, revisione umana, report e backup. Il modello non approva risultati. Il prodotto serve una persona sul proprio computer; l'hosting non è incluso. La [guida](USER_GUIDE.md) descrive funzioni e limiti effettivi.
+
+Version 1.0 ships local imports, retained sources/passages, text and optional semantic search, cited AI proposals, comparison, human review, reports, and backup. Models never approve results. It serves one person on their computer; hosting is outside this release. The [guide](USER_GUIDE.md) describes shipped behavior and limits.
+
+The original product direction below remains the vision for subsequent releases.
+
 ## Promise
 
 Open Research Engine helps a reader answer a research question without hiding the evidence trail. The central promise is not that the system is always right; it is that every reportable factual claim can be traced to inspectable source passages or is clearly marked as unsupported, disputed, or interpretive.

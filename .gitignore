@@ -17,7 +17,7 @@ Thumbs.db
 /reports/
 /tmp/
 
-# JavaScript / Python build output (stack is not selected yet)
+# Build output
 node_modules/
 dist/
 build/
@@ -29,3 +29,16 @@ __pycache__/
 # Coverage and logs
 coverage/
 *.log
+
+# Recovery copy of the incomplete OneDrive Git metadata (2026-10-10)
+/.recovery-20261010/
+/.testtmp/
+/.test-ui/
+/.test-runner/
+/.test-beta/
+/.test-*/
+/.release-private/
+/.artifacts/
+pytest-cache-files-*/
+/workspace/
+*.egg-info/

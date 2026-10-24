@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SourcePilot · Ricerca locale</title>
+  <link rel="stylesheet" href="/static/app.css?v=1.0.0">
+  <script src="/static/app.js?v=1.0.0" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark">SP</span><span>SourcePilot <small>1.0 · locale</small></span></div>
+    <div class="workspace-path" id="workspace-path" title="Workspace locale">Caricamento workspace…</div>
+    <nav class="export-actions" aria-label="Workspace e report"><button id="check-workspace" type="button" class="ghost">Verifica dati</button><button id="backup-workspace" type="button" class="ghost">Backup</button><a class="export-link" href="/api/report.md" download="sourcepilot-report.md">Markdown</a><a class="export-link" href="/api/report.pdf" download="sourcepilot-report.pdf">PDF</a></nav>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">Workspace di ricerca</p><h1 id="page-title">Ogni affermazione<br>ha una fonte.</h1></div>
+      <p class="intro-copy">Importa documenti, trova i passaggi rilevanti e collega le prove alle affermazioni che decidi di includere nel report.</p>
+    </section>
+    <section class="import-panel" aria-labelledby="import-title">
+      <div class="section-index">01</div>
+      <div class="import-body">
+        <div class="section-head"><h2 id="import-title">Importa fonti</h2><p>TXT, Markdown, HTML, DOCX e PDF con testo selezionabile · massimo 20 MB per file</p></div>
+        <div class="import-actions">
+          <button type="button" id="pick-files" class="primary">Scegli file</button>
+          <button type="button" id="pick-folder">Scegli cartella</button>
+          <input id="file-input" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.pdf,.docx" hidden>
+          <input id="folder-input" type="file" multiple webkitdirectory directory hidden>
+          <form id="url-form" class="url-form"><label for="url-input">URL</label><input id="url-input" type="url" placeholder="https://…" required><button type="submit">Importa URL</button></form>
+        </div>
+        <div id="import-status" class="status-line" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+    <section class="ai-toolbar" aria-label="AI locale opzionale"><div><strong>AI locale</strong><p id="ai-status" role="status">Controllo configurazione…</p></div><div class="ai-actions"><button id="refresh-ai" type="button">Verifica modelli</button><button id="index-ai" type="button" disabled>Indicizza per significato</button><button id="suggest-ai" type="button" disabled>Proponi dall’ultima versione</button></div></section>
+    <section class="research-grid" aria-label="Ricerca e revisione">
+      <aside class="left-column">
+        <div class="column-header"><span class="section-index">02</span><h2>Raccolta</h2></div>
+        <div class="tab-row" role="tablist" aria-label="Raccolta">
+          <button id="sources-tab" type="button" class="tab active" role="tab" aria-selected="true">Fonti <span id="source-count">0</span></button>
+          <button id="claims-tab" type="button" class="tab" role="tab" aria-selected="false">Affermazioni <span id="claim-count">0</span></button>
+        </div>
+        <div id="collection-list" class="collection-list"></div>
+      </aside>
+      <section class="middle-column" aria-labelledby="passages-title">
+        <div class="column-header"><span class="section-index">03</span><h2 id="passages-title">Passaggi</h2></div>
+        <form id="search-form" class="search-form"><label class="visually-hidden" for="search-input">Cerca nei documenti</label><input id="search-input" type="search" maxlength="2000" placeholder="Cerca nei documenti"><label class="visually-hidden" for="search-mode">Tipo di ricerca</label><select id="search-mode"><option value="text">Testuale</option><option value="semantic" id="semantic-option" disabled>Semantica</option></select><button type="submit" class="primary">Cerca</button></form>
+        <label class="history-toggle"><input id="include-history" type="checkbox"> Includi versioni precedenti nella ricerca</label>
+        <div id="version-controls" class="version-controls" hidden><label for="version-select">Versione della fonte</label><select id="version-select"></select><a id="original-link" href="#">Scarica originale</a></div>
+        <details class="compare-panel"><summary>Confronta due fonti</summary><form id="compare-form"><label for="compare-left">Prima fonte</label><select id="compare-left" required></select><label for="compare-right">Seconda fonte</label><select id="compare-right" required></select><label for="compare-query">Termine di confronto</label><input id="compare-query" maxlength="2000" required placeholder="Es. stima, data, requisito"><button type="submit">Confronta</button><button type="button" id="assess-ai" disabled>Proponi possibili contraddizioni</button></form></details>
+        <section id="analysis-results" class="analysis-results" aria-label="Proposte AI da verificare" hidden></section>
+        <div id="passage-context" class="context-line">Seleziona una fonte o cerca una parola.</div>
+        <div id="passage-list" class="passage-list"></div>
+        <div id="compare-results" class="compare-grid" hidden></div>
+      </section>
+      <aside class="right-column" aria-labelledby="review-title">
+        <div class="column-header"><span class="section-index">04</span><h2 id="review-title">Revisione</h2></div>
+        <div id="review-panel" class="review-panel"></div>
+      </aside>
+    </section>
+  </main>
+  <footer>SourcePilot 1.0 · Dati e file nel workspace locale · Le citazioni indicano un passaggio, non ne certificano la verità. Le proposte AI richiedono revisione umana.</footer>
+</body>
+</html>

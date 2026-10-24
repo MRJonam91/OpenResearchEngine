@@ -1,11 +1,37 @@
 # Roadmap
 
+## Stato 1.0.0 / Shipped in 1.0.0
+
+| Area | Stato / Status |
+| --- | --- |
+| Import TXT/MD/HTML/PDF/DOCX, originali, versioni, passaggi | Completato / Shipped |
+| Web app locale, API e CLI | Completato / Shipped |
+| FTS5, confronto affiancato e revisione umana | Completato / Shipped |
+| Semantica e proposte citate tramite Ollama locale opzionale | Completato / Shipped; qualità dipendente dal modello / model-dependent quality |
+| Markdown/PDF e provenienza AI | Completato / Shipped |
+| Diagnostica, backup/ripristino portabile | Completato / Shipped |
+
+La 1.0 consolida il flusso personale locale. I controlli automatici validano struttura, citazioni e integrità; non certificano la verità dei contenuti. Il [piano 1.0](superpowers/plans/2026-10-24-v1.md) registra implementazione e verifiche.
+
+Version 1.0 stabilizes the personal local workflow. Automated checks validate structure, citations, and integrity; they do not certify content truth. The [1.0 plan](superpowers/plans/2026-10-24-v1.md) records implementation and release validation.
+
+## Priorità successive / Next priorities
+
+1. **1.0.x affidabilità / reliability:** regressioni, aggiornamenti dipendenze, accessibilità e miglioramento delle segnalazioni d'errore / regressions, dependency updates, accessibility, and clearer errors.
+2. **1.1 qualità ricerca / research quality:** corpus con licenza e aspettative di recupero, valutazione di citazioni e disaccordi, confronto tra modelli con metadati riproducibili / licensed evaluation corpus, retrieval/citation/disagreement evaluation, reproducible model comparisons.
+3. **1.2 scala personale / personal scale:** indicizzazione incrementale in background, cancellazione controllata, PDF multilingua e localizzazione UI / background incremental indexing, controlled deletion, multilingual PDF fonts, and UI localization.
+4. **Ricerca futura / later research:** OCR con posizioni verificabili, nuovi formati e scoperta web assistita; hosting e multiutenza solo con identità, autorizzazioni e policy dati dedicate / locatable OCR, more formats, assisted web discovery; hosting only with dedicated identity, authorization, and data controls.
+
+## Piano originario / Original staged vision
+
+The stages below remain a product vision. Completed pieces are listed above; unshipped evaluation/hosting gates remain future work.
+
 ## 0. Discovery and evaluation
 
 - Define the initial user journey, privacy posture, licensing assumptions, and source-ingestion policy.
 - Assemble a small, licensed evaluation corpus with expected citations and known disagreements.
 - Set measurable quality gates: passage retrieval, citation correctness, claim faithfulness, and contradiction precision.
-- Select the implementation stack only after the first vertical slice clarifies needs.
+- Stack selected for 1.0: Python/FastAPI/SQLite with optional local Ollama.
 
 **Exit condition:** a written scope, evaluation fixture set, and a decision record for material technology commitments.
 
