@@ -2,6 +2,8 @@
 
 ## Stato 1.0.0 / Shipped in 1.0.0
 
+[Release stabile / Stable release](https://github.com/MRJonam91/OpenResearchEngine/releases/tag/v1.0.0), pubblicazione e verifiche confermate il 25 ottobre 2026 / publication and checks confirmed on 25 October 2026.
+
 | Area | Stato / Status |
 | --- | --- |
 | Import TXT/MD/HTML/PDF/DOCX, originali, versioni, passaggi | Completato / Shipped |

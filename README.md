@@ -2,6 +2,8 @@
 
 > Research any topic. Every claim has a source.
 
+[Release 1.0.0](https://github.com/MRJonam91/OpenResearchEngine/releases/tag/v1.0.0) · [CI](https://github.com/MRJonam91/OpenResearchEngine/actions/workflows/test.yml)
+
 ## Italiano
 
 SourcePilot **1.0.0** è un'applicazione di ricerca locale per un solo utente. Conserva fonti originali, trova passaggi e costruisce affermazioni con citazioni verificabili. Web app, API e CLI condividono il workspace SQLite; la persona decide quali affermazioni approvare.
