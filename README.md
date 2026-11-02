@@ -8,11 +8,15 @@
 
 SourcePilot **1.0.0** è un'applicazione di ricerca locale per un solo utente. Conserva fonti originali, trova passaggi e costruisce affermazioni con citazioni verificabili. Web app, API e CLI condividono il workspace SQLite; la persona decide quali affermazioni approvare.
 
+[Prova senza AI con un file fittizio](docs/FIRST-RUN.md) · [Presentazione e richiesta feedback](docs/SHARING.md)
+
 ### Avvio rapido (Windows)
 
-Serve Python **3.11–3.14**. In PowerShell, dalla cartella del repository:
+Serve Python **3.11–3.14**. In PowerShell, scarica prima il sorgente oppure esegui:
 
 ```powershell
+git clone https://github.com/MRJonam91/OpenResearchEngine.git
+cd OpenResearchEngine
 .\run.ps1
 ```
 
@@ -38,11 +42,15 @@ OCR, ricerca autonoma sul web e hosting multiutente sono oltre la 1.0. Il PDF se
 
 SourcePilot **1.0.0** is a local research application for one user. It retains originals, finds locatable passages, and builds claims with inspectable citations. The web app, API, and CLI share a SQLite workspace; people make review decisions.
 
+[Try it without AI using a fictional source](docs/FIRST-RUN.md) · [Sharing and feedback](docs/SHARING.md)
+
 ### Quick start (Windows)
 
-Install Python **3.11–3.14**. In PowerShell from the repository:
+Install Python **3.11–3.14**. In PowerShell, download the source first or run:
 
 ```powershell
+git clone https://github.com/MRJonam91/OpenResearchEngine.git
+cd OpenResearchEngine
 .\run.ps1
 ```
 

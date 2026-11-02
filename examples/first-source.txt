@@ -1,0 +1,5 @@
+SourcePilot offline walkthrough - fictional source
+
+The fictional Northbridge Library opens at 09:00 on weekdays.
+Its reading room has 24 seats.
+These sentences are invented for a software demonstration, not real-world facts.
