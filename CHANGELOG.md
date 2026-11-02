@@ -33,3 +33,8 @@ This beta remains local and single-user. Search is SQLite full-text, not semanti
 ## 0.1.0 — local alpha
 
 - File, folder, and public URL import; SQLite full-text search; human-reviewed claims; Markdown report; local API and CLI.
+
+## Unreleased maintenance / Manutenzione non rilasciata — 2026-11-02
+
+- EN: Raise the pypdf minimum and tested constraint to 6.21.4 after the dependency audit reported CVE-2026-119204 and CVE-2026-119205. This updates source installation; existing 1.0.0 release artifacts are unchanged. Upgrade an installed environment with the current source/constraints before processing untrusted PDFs. [Upstream release](https://github.com/py-pdf/pypdf/releases/tag/6.21.4).
+- IT: Minimo e vincolo pypdf aggiornati a 6.21.4 dopo i rilievi CVE-2026-119204 e CVE-2026-119205. La correzione riguarda l installazione dai sorgenti; i pacchetti della release 1.0.0 esistente restano invariati. Aggiornare l ambiente con sorgenti/vincoli correnti prima di elaborare PDF non fidati.

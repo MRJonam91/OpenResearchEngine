@@ -4,6 +4,8 @@
 
 [Release 1.0.0](https://github.com/MRJonam91/OpenResearchEngine/releases/tag/v1.0.0) · [CI](https://github.com/MRJonam91/OpenResearchEngine/actions/workflows/test.yml)
 
+**Manutenzione / Maintenance — 2026-11-02:** i sorgenti correnti richiedono pypdf 6.21.4 per due correzioni di sicurezza upstream. Per una nuova installazione usa la clonazione sotto; gli artefatti 1.0.0 precedenti non sono stati sostituiti. / Current source requires patched pypdf 6.21.4. Use the clone instructions below for a new installation; older 1.0.0 artifacts have not been replaced. [Dettagli / Details](CHANGELOG.md).
+
 ## Italiano
 
 SourcePilot **1.0.0** è un'applicazione di ricerca locale per un solo utente. Conserva fonti originali, trova passaggi e costruisce affermazioni con citazioni verificabili. Web app, API e CLI condividono il workspace SQLite; la persona decide quali affermazioni approvare.

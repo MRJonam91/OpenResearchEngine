@@ -4,7 +4,7 @@
 
 Obiettivo: importare una fonte, trovare un passaggio, revisionare un'affermazione ed esportare un report citato. L'esempio usa una biblioteca inventata; non dimostra la correttezza di fatti reali. Non servono Ollama, un modello, una chiave API o documenti personali.
 
-1. Installa Python 3.11–3.14, clona questa repository e apri PowerShell nella sua cartella. Se usi il [sorgente 1.0.0](https://github.com/MRJonam91/OpenResearchEngine/releases/tag/v1.0.0), scarica separatamente il file fittizio collegato al punto 3: è stato aggiunto dopo la release.
+1. Installa Python 3.11–3.14, clona il branch corrente di questa repository e apri PowerShell nella sua cartella, seguendo il README. I sorgenti attuali includono il file fittizio e richiedono pypdf 6.21.4; i vecchi artefatti 1.0.0 precedono questo aggiornamento.
 2. Avvia `./run.ps1 -Workspace ./workspace-trial`. Il primo avvio installa le dipendenze e richiede internet; il percorso manuale seguente usa file locali. Apri `http://127.0.0.1:8765`.
 3. Importa [examples/first-source.txt](../examples/first-source.txt) tramite la selezione file. Cerca `Northbridge`, apri la fonte e seleziona il passaggio con l'orario.
 4. Crea l'affermazione `The fictional Northbridge Library opens at 09:00 on weekdays.` collegandola al passaggio. Prima è una bozza: controlla il testo e approvala per questa dimostrazione.
@@ -18,7 +18,7 @@ Hai incontrato un ostacolo? Segnala sistema operativo, versione Python, passaggi
 
 Goal: import a source, locate a passage, review a claim and export a cited report. The library is fictional; the example does not establish real-world facts. No Ollama model, API key or personal documents are required.
 
-1. Install Python 3.11–3.14, clone this repository and open PowerShell in its folder. If using the [1.0.0 source](https://github.com/MRJonam91/OpenResearchEngine/releases/tag/v1.0.0), download the fictional file linked in step 3 separately: it was added after that release.
+1. Install Python 3.11–3.14, clone the current default branch and open PowerShell in its folder, following the README. Current sources include the fictional file and require pypdf 6.21.4; older 1.0.0 artifacts predate this update.
 2. Run `./run.ps1 -Workspace ./workspace-trial` and open `http://127.0.0.1:8765`. First installation needs internet for dependencies; this manual workflow then uses local files.
 3. Import [examples/first-source.txt](../examples/first-source.txt) using the file picker. Search for `Northbridge`, open the source and select the passage containing the opening time.
 4. Create `The fictional Northbridge Library opens at 09:00 on weekdays.` with that passage as evidence. Inspect the proposed claim and approve it for this demonstration.

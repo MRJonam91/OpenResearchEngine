@@ -11,7 +11,7 @@ opentelemetry-api==1.45.1
 pillow==13.0.0
 pydantic==2.14.0
 pydantic-core==2.50.0
-pypdf==6.21.2
+pypdf==6.21.4
 reportlab==4.5.1
 starlette==1.7.0
 typing-extensions==4.16.0
