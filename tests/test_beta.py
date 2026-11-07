@@ -135,3 +135,39 @@ def test_csv_and_tsv_ingest(tmp_path: Path):
     tsv_passages = store.list_passages(tsv_item["source_id"])
     assert len(tsv_passages) >= 1
     assert "val1" in tsv_passages[0]["text"]
+
+
+def test_docx_with_sdt_content_controls(tmp_path: Path):
+    from io import BytesIO
+    import zipfile
+    from sourcepilot.ingest import extract_passages
+
+    xml = '''<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>
+        <w:p><w:r><w:t>Normal intro paragraph.</w:t></w:r></w:p>
+        <w:sdt>
+            <w:sdtContent>
+                <w:p><w:r><w:t>Inside content control.</w:t></w:r></w:p>
+            </w:sdtContent>
+        </w:sdt>
+        </w:body></w:document>'''
+    data = BytesIO()
+    with zipfile.ZipFile(data, "w") as archive:
+        archive.writestr("word/document.xml", xml)
+    passages = extract_passages("controlled.docx", data.getvalue())
+    assert len(passages) == 2
+    assert passages[0] == ("paragraph 1", "Normal intro paragraph.")
+    assert passages[1] == ("paragraph 2", "Inside content control.")
+
+
+def test_content_length_whitespace_resilience(tmp_path: Path):
+    app = create_app(tmp_path / "workspace")
+    client = TestClient(app)
+    token = client.get("/api/bootstrap").json()["write_token"]
+    content = b"Tested content.\n"
+    resp = client.post(
+        "/api/import",
+        content=content,
+        headers={"X-SourcePilot-Token": token, "X-File-Name": "clean.txt", "Content-Length": f"  {len(content)}  "}
+    )
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "ready"

@@ -52,6 +52,9 @@ h2{font-size:1rem;letter-spacing:-.025em;margin:0;font-weight:700}
 .tab{border:0;background:none;padding:.75rem 0;font-size:.78rem;color:var(--muted);border-bottom:2px solid transparent}
 .tab.active{border-color:var(--blue);color:var(--blue);font-weight:700}
 .tab span{font-variant-numeric:tabular-nums;margin-left:.15rem}
+.filter-row{display:flex;gap:.3rem;flex-wrap:wrap;padding:.4rem 0;border-bottom:1px solid var(--line)}
+.filter-pill{font-size:.67rem;padding:.2rem .45rem;border-radius:12px;border:1px solid var(--line);background:var(--white);color:var(--muted)}
+.filter-pill.active{background:var(--blue);color:var(--white);border-color:var(--blue);font-weight:700}
 .collection-item{display:block;width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:1rem .35rem;text-align:left}
 .collection-item.active{border-left:3px solid var(--blue);padding-left:.65rem;background:var(--white)}
 .item-title{display:block;font-size:.83rem;font-weight:700;line-height:1.35;overflow-wrap:anywhere}

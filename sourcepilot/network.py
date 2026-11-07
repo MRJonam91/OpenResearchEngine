@@ -65,8 +65,10 @@ def fetch_public(url: str, limit: int) -> tuple[bytes, str, str]:
                 if response.getheader("Content-Encoding", "identity").lower() not in {"identity", ""}:
                     raise ValueError("Compressed HTTP responses are not supported")
                 declared = response.getheader("Content-Length")
-                if declared and (not declared.isdigit() or int(declared) > limit):
-                    raise ValueError("URL response exceeds the size limit or has invalid length")
+                if declared:
+                    declared_clean = declared.strip()
+                    if not declared_clean.isdigit() or int(declared_clean) > limit:
+                        raise ValueError("URL response exceeds the size limit or has invalid length")
                 data = response.read(limit + 1)
                 if len(data) > limit:
                     raise ValueError("URL response exceeds the 20 MB limit")

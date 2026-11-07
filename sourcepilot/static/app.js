@@ -1,4 +1,4 @@
-const s = { token: "", sources: [], claims: [], passages: [], versions: [], comparison: null, source: null, claim: null, passage: null, ai: null, aiBusy: false, tab: "sources" };
+const s = { token: "", sources: [], claims: [], passages: [], versions: [], comparison: null, source: null, claim: null, passage: null, ai: null, aiBusy: false, tab: "sources", claimFilter: "all" };
 const $ = id => document.getElementById(id);
 const statusLabel = value => ({ proposed: "da revisionare", approved: "approvata", uncertain: "incerta", rejected: "respinta" })[value] || value;
 
@@ -128,9 +128,27 @@ function collection() {
     button.classList.toggle("active", s.tab === tab);
     button.setAttribute("aria-selected", String(s.tab === tab));
   }
-  const items = s.tab === "sources" ? s.sources : s.claims;
+  if (s.tab === "claims" && s.claims.length) {
+    const filterRow = el("div", "filter-row");
+    const filters = [
+      ["all", "Tutte"],
+      ["proposed", "Da rev."],
+      ["approved", "Approvate"],
+      ["uncertain", "Incerte"],
+      ["rejected", "Respinte"]
+    ];
+    for (const [code, label] of filters) {
+      const pill = el("button", `filter-pill${s.claimFilter === code ? " active" : ""}`, label);
+      pill.type = "button";
+      pill.onclick = () => { s.claimFilter = code; collection(); };
+      filterRow.append(pill);
+    }
+    list.append(filterRow);
+  }
+  const filteredClaims = s.claims.filter(item => s.claimFilter === "all" || item.status === s.claimFilter);
+  const items = s.tab === "sources" ? s.sources : filteredClaims;
   if (!items.length) {
-    list.append(el("p", "empty", s.tab === "sources" ? "Nessuna fonte importata. Scegli un file o una cartella." : "Nessuna affermazione. Seleziona un passaggio per crearne una."));
+    list.append(el("p", "empty", s.tab === "sources" ? "Nessuna fonte importata. Scegli un file o una cartella." : "Nessuna affermazione con questo filtro."));
     return;
   }
   for (const item of items) {

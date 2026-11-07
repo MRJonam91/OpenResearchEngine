@@ -44,7 +44,17 @@ def _docx(data: bytes) -> list[tuple[str, str]]:
         text = lambda node: "".join(part.text or "" for part in node.iter(f"{ns}t")).strip()
         result = []
         paragraph = table = 0
-        for node in body:
+
+        def _iter_elements(parent):
+            for node in parent:
+                if node.tag in (f"{ns}p", f"{ns}tbl"):
+                    yield node
+                elif node.tag == f"{ns}sdt":
+                    content = node.find(f"{ns}sdtContent")
+                    if content is not None:
+                        yield from _iter_elements(content)
+
+        for node in _iter_elements(body):
             if node.tag == f"{ns}p":
                 paragraph += 1
                 if text(node):

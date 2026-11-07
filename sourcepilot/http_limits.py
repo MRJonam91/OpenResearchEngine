@@ -17,10 +17,12 @@ class RequestBodyLimit:
         if scope["type"] != "http":
             return await self.app(scope, receive, send)
         limit = MAX_IMPORT_BYTES if scope["path"] == "/api/import" else MAX_JSON_BYTES
-        declared = Headers(scope=scope).get("content-length")
-        if declared is not None and (not declared.isdigit() or int(declared) > limit):
-            status = 413 if declared.isdigit() else 400
-            return await JSONResponse({"detail": "Request body exceeds the size limit or has invalid length"}, status_code=status)(scope, receive, send)
+        raw_declared = Headers(scope=scope).get("content-length")
+        if raw_declared is not None:
+            declared = raw_declared.strip()
+            if not declared.isdigit() or int(declared) > limit:
+                status = 413 if declared.isdigit() else 400
+                return await JSONResponse({"detail": "Request body exceeds the size limit or has invalid length"}, status_code=status)(scope, receive, send)
         total = 0
 
         async def bounded_receive():

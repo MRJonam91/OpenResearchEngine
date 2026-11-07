@@ -139,7 +139,7 @@ def create_app(workspace: str | Path, *, model: str | None = None, embedding_mod
     @app.post("/api/import", dependencies=[Depends(require_write_token)])
     async def import_upload(request: Request):
         try:
-            length = int(request.headers.get("content-length", "0"))
+            length = int(request.headers.get("content-length", "0").strip())
         except ValueError as exc:
             raise HTTPException(status_code=400, detail="Invalid content length") from exc
         if length > MAX_IMPORT_BYTES:
