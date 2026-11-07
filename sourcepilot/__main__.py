@@ -46,6 +46,7 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--ollama-url", default=os.getenv("SOURCEPILOT_OLLAMA_URL", "http://127.0.0.1:11434"))
 
     ai_options(serve)
+    common("sources")
     import_parser = common("import")
     import_parser.add_argument("path", type=Path)
     url_parser = common("import-url")
@@ -59,6 +60,8 @@ def main(argv: list[str] | None = None) -> int:
     compare_parser.add_argument("left_id", type=_identifier)
     compare_parser.add_argument("right_id", type=_identifier)
     compare_parser.add_argument("query")
+    claims_parser = common("claims")
+    claims_parser.add_argument("--status", choices=["proposed", "approved", "rejected", "uncertain"], default=None)
     claim_parser = common("claim")
     claim_parser.add_argument("text")
     claim_parser.add_argument("--passage", type=_identifier, required=True)
@@ -142,7 +145,11 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 _print(ai.get_run(args.run_id))
             return 0
-        if args.command == "import":
+        if args.command == "sources":
+            _print(store.list_sources())
+        elif args.command == "claims":
+            _print(research.list_claims(status=args.status))
+        elif args.command == "import":
             path = args.path.expanduser().resolve(strict=True)
             if path.is_dir():
                 results = []

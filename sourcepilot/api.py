@@ -167,8 +167,8 @@ def create_app(workspace: str | Path, *, model: str | None = None, embedding_mod
         return research.compare(left_id, right_id, q)
 
     @app.get("/api/claims")
-    def claims():
-        return research.list_claims()
+    def claims(status: str | None = None):
+        return research.list_claims(status=status)
 
     @app.post("/api/claims", dependencies=[Depends(require_write_token)])
     def create_claim(payload: ClaimInput):

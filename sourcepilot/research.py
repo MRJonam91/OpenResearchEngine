@@ -185,35 +185,44 @@ class ResearchService:
             ).fetchall()
             return [dict(row) for row in rows]
 
+    @staticmethod
+    def _fetch_claim_with_db(db, claim_id: int) -> dict:
+        row = db.execute("SELECT * FROM claim WHERE id = ?", (claim_id,)).fetchone()
+        if row is None:
+            raise ValueError("Claim does not exist")
+        claim = dict(row)
+        evidence = db.execute(
+            "SELECT e.stance, p.id AS passage_id, p.text, p.locator, p.version_id, "
+            "s.id AS source_id, s.title, s.origin, sv.sha256, sv.imported_at "
+            "FROM evidence_link e JOIN passage p ON p.id = e.passage_id "
+            "JOIN source_version sv ON sv.id = p.version_id "
+            "JOIN source s ON s.id = sv.source_id "
+            "WHERE e.claim_id = ? ORDER BY e.rowid",
+            (claim_id,),
+        ).fetchall()
+        claim["evidence"] = [dict(item) for item in evidence]
+        stances = {item["stance"] for item in claim["evidence"]}
+        claim["disputed"] = "supports" in stances and "challenges" in stances
+        origin = db.execute(
+            "SELECT a.run_id, r.model, r.model_digest, r.prompt_version FROM accepted_suggestion a "
+            "JOIN analysis_run r ON r.id = a.run_id WHERE a.claim_id = ?", (claim_id,),
+        ).fetchone()
+        claim["provenance"] = {"kind": "ai", **dict(origin)} if origin else {"kind": "human"}
+        return claim
+
     def get_claim(self, claim_id: int) -> dict:
         with self.store.connect() as db:
-            row = db.execute("SELECT * FROM claim WHERE id = ?", (claim_id,)).fetchone()
-            if row is None:
-                raise ValueError("Claim does not exist")
-            claim = dict(row)
-            evidence = db.execute(
-                "SELECT e.stance, p.id AS passage_id, p.text, p.locator, p.version_id, "
-                "s.id AS source_id, s.title, s.origin, sv.sha256, sv.imported_at "
-                "FROM evidence_link e JOIN passage p ON p.id = e.passage_id "
-                "JOIN source_version sv ON sv.id = p.version_id "
-                "JOIN source s ON s.id = sv.source_id "
-                "WHERE e.claim_id = ? ORDER BY e.rowid",
-                (claim_id,),
-            ).fetchall()
-            claim["evidence"] = [dict(item) for item in evidence]
-            stances = {item["stance"] for item in claim["evidence"]}
-            claim["disputed"] = "supports" in stances and "challenges" in stances
-            origin = db.execute(
-                "SELECT a.run_id, r.model, r.model_digest, r.prompt_version FROM accepted_suggestion a "
-                "JOIN analysis_run r ON r.id = a.run_id WHERE a.claim_id = ?", (claim_id,),
-            ).fetchone()
-            claim["provenance"] = {"kind": "ai", **dict(origin)} if origin else {"kind": "human"}
-            return claim
+            return self._fetch_claim_with_db(db, claim_id)
 
-    def list_claims(self) -> list[dict]:
+    def list_claims(self, status: str | None = None) -> list[dict]:
+        if status is not None and status not in STATUSES:
+            raise ValueError(f"Invalid claim status filter: {status}")
         with self.store.connect() as db:
-            ids = [row["id"] for row in db.execute("SELECT id FROM claim ORDER BY id DESC")]
-        return [self.get_claim(claim_id) for claim_id in ids]
+            if status is not None:
+                ids = [row["id"] for row in db.execute("SELECT id FROM claim WHERE status = ? ORDER BY id DESC", (status,))]
+            else:
+                ids = [row["id"] for row in db.execute("SELECT id FROM claim ORDER BY id DESC")]
+            return [self._fetch_claim_with_db(db, claim_id) for claim_id in ids]
 
     def render_report(self, include_proposed: bool = False) -> str:
         from .report import render_report

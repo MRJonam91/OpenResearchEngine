@@ -40,12 +40,13 @@ def diagnose(store: ResearchStore) -> dict:
             issues.append({"kind": "search_index", "error": f"{missing} passages missing from text index"})
         versions = db.execute("SELECT id, sha256 FROM source_version ORDER BY id").fetchall()
         counts = {name: db.execute(f"SELECT COUNT(*) FROM {name}").fetchone()[0] for name in ("source", "source_version", "passage", "claim")}
+        claim_statuses = {row["status"]: row["count"] for row in db.execute("SELECT status, COUNT(*) AS count FROM claim GROUP BY status")}
     for version in versions:
         try:
             store.original_path(version["sha256"])
         except (ValueError, OSError) as exc:
             issues.append({"kind": "original", "version_id": version["id"], "error": str(exc)})
-    return {"healthy": not issues, "counts": counts, "issues": issues}
+    return {"healthy": not issues, "counts": counts, "claim_statuses": claim_statuses, "issues": issues}
 
 
 def backup_workspace(store: ResearchStore, output: str | Path) -> dict:

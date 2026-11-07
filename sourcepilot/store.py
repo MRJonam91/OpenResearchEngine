@@ -81,6 +81,7 @@ class ResearchStore:
                 CREATE INDEX IF NOT EXISTS source_version_latest ON source_version(source_id, id);
                 CREATE INDEX IF NOT EXISTS revision_claim ON claim_revision(claim_id, id);
                 CREATE INDEX IF NOT EXISTS embedding_model ON embedding(model_key, passage_id);
+                CREATE INDEX IF NOT EXISTS claim_status ON claim(status, id);
                 """
             )
             db.execute("PRAGMA user_version = 3")
