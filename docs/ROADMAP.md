@@ -6,11 +6,12 @@
 
 | Area | Stato / Status |
 | --- | --- |
-| Import TXT/MD/HTML/PDF/DOCX, originali, versioni, passaggi | Completato / Shipped |
+| Import TXT/MD/HTML/PDF/DOCX/CSV/TSV, originali, versioni, passaggi | Completato / Shipped |
 | Web app locale, API e CLI | Completato / Shipped |
 | FTS5, confronto affiancato e revisione umana | Completato / Shipped |
+| Cancellazione controllata (fonti e affermazioni) con integrità referenziale | Completato / Shipped |
 | Semantica e proposte citate tramite Ollama locale opzionale | Completato / Shipped; qualità dipendente dal modello / model-dependent quality |
-| Markdown/PDF e provenienza AI | Completato / Shipped |
+| Report Markdown/PDF/JSON e provenienza AI | Completato / Shipped |
 | Diagnostica, backup/ripristino portabile | Completato / Shipped |
 
 La 1.0 consolida il flusso personale locale. I controlli automatici validano struttura, citazioni e integrità; non certificano la verità dei contenuti. Il [piano 1.0](superpowers/plans/2026-10-24-v1.md) registra implementazione e verifiche.

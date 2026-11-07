@@ -18,12 +18,12 @@ Il server ascolta solo `127.0.0.1`. Usa `--port` o `-Port` in PowerShell per sce
 
 ### Importare, cercare e revisionare
 
-1. Seleziona file o una cartella nel browser; vengono caricati solo i file scelti, senza accesso generale al disco. La CLI può importare una cartella ricorsivamente. Formati: TXT/Markdown/HTML UTF-8, DOCX (paragrafi e tabelle), PDF con testo selezionabile. Limite 20 MB per elemento; DOCX ha un ulteriore limite di espansione di 80 MB. Non sono supportati OCR, vecchi `.doc`, PDF cifrati o pagine che richiedono JavaScript/login.
+1. Seleziona file o una cartella nel browser; vengono caricati solo i file scelti, senza accesso generale al disco. La CLI può importare una cartella ricorsivamente. Formati: TXT/Markdown/HTML UTF-8, DOCX (paragrafi e tabelle), PDF con testo selezionabile, CSV e TSV. Limite 20 MB per elemento; DOCX ha un ulteriore limite di espansione di 80 MB. Non sono supportati OCR, vecchi `.doc`, PDF cifrati o pagine che richiedono JavaScript/login.
 2. Puoi importare URL HTTP/HTTPS pubblici su porte standard: HTML, testo, PDF o DOCX. Gli originali sono conservati per hash, con origine e data. Reimportare la stessa origine con contenuto diverso crea una nuova versione; le vecchie citazioni restano legate ai passaggi originali.
-3. Apri una fonte e scegli la versione. La ricerca testuale usa FTS5 con i termini della query in AND (massimo 12 termini); per impostazione predefinita cerca solo nell'ultima versione di ogni fonte. La casella cronologia include quelle precedenti.
+3. Apri una fonte e scegli la versione. La ricerca testuale usa FTS5 con i termini della query in AND (massimo 12 termini); per impostazione predefinita cerca solo nell'ultima versione di ogni fonte. La casella cronologia include quelle precedenti. È possibile eliminare fonti non referenziate da affermazioni.
 4. Seleziona un passaggio, scrivi un'affermazione verificabile e crea una bozza. Collega altri passaggi come supporto, contrasto o contesto. *Confronta due fonti* mostra i risultati per fonte; non decide quale sia corretta.
-5. Revisiona come approvata, incerta o respinta, con nota facoltativa. Le modifiche effettive a testo o prove riportano l'affermazione a *da revisionare* e registrano lo stato precedente. Deve rimanere almeno una prova collegata.
-6. Esporta Markdown o PDF. Il report predefinito include solo approvate e incerte e mantiene stato, prove, origine, data, SHA-256 completo, posizione, ID di passaggio e versione. I PDF usano Bitstream Vera: se manca un carattere, l'errore è esplicito e puoi esportare Markdown. I report possono contenere percorsi locali ed estratti: rileggili prima di condividerli.
+5. Revisiona come approvata, incerta o respinta, con nota facoltativa. Le modifiche effettive a testo o prove riportano l'affermazione a *da revisionare* e registrano lo stato precedente. Deve rimanere almeno una prova collegata. È sempre possibile eliminare affermazioni non più necessarie.
+6. Esporta Markdown, PDF o JSON. Il report predefinito include solo approvate e incerte e mantiene stato, prove, origine, data, SHA-256 completo, posizione, ID di passaggio e versione. I PDF usano Bitstream Vera: se manca un carattere, l'errore è esplicito e puoi esportare Markdown o JSON. I report possono contenere percorsi locali ed estratti: rileggili prima di condividerli.
 
 ### AI locale opzionale
 
@@ -60,18 +60,23 @@ Backup e report rifiutano la sovrascrittura. Il ripristino verifica archivio, pe
 `python -m sourcepilot` equivale al comando `sourcepilot`. I comandi workspace accettano `--workspace PATH`; vedi anche `--help`:
 
 ```sh
+sourcepilot sources --workspace ./workspace
 sourcepilot import ./documents --workspace ./workspace
 sourcepilot import-url https://example.org --workspace ./workspace
 sourcepilot search "budget" --include-history --workspace ./workspace
 sourcepilot versions 1 --workspace ./workspace
+sourcepilot delete-source 1 --workspace ./workspace
 sourcepilot compare 1 2 "budget" --workspace ./workspace
+sourcepilot claims --status approved --workspace ./workspace
 sourcepilot claim "A specific statement" --passage 1 --workspace ./workspace
 sourcepilot evidence 1 2 --stance challenges --workspace ./workspace
 sourcepilot review 1 --status uncertain --note "Sources disagree" --workspace ./workspace
 sourcepilot edit 1 "Corrected statement" --workspace ./workspace
 sourcepilot revisions 1 --workspace ./workspace
 sourcepilot remove-evidence 1 2 --workspace ./workspace
+sourcepilot delete-claim 1 --workspace ./workspace
 sourcepilot report --output ./report.pdf --workspace ./workspace
+sourcepilot report --output ./report.json --format json --workspace ./workspace
 sourcepilot index --embedding-model all-minilm:latest --workspace ./workspace
 sourcepilot semantic "municipal spending" --embedding-model all-minilm:latest --workspace ./workspace
 sourcepilot suggest 1 --model qwen2.5-coder:7b --workspace ./workspace
@@ -80,22 +85,22 @@ sourcepilot accept 1 0 --workspace ./workspace
 sourcepilot ai-run 1 --workspace ./workspace
 ```
 
-Il suffisso `.pdf` sceglie PDF; `--format pdf|markdown` lo rende esplicito. `--include-proposed` aggiunge deliberatamente le bozze. CLI: codice 0 successo, 2 errore, 3 problemi rilevati da `doctor`.
+Il suffisso `.pdf` sceglie PDF, `.json` sceglie JSON; `--format pdf|markdown|json` lo rende esplicito. `--include-proposed` aggiunge deliberatamente le bozze. CLI: codice 0 successo, 2 errore, 3 problemi rilevati da `doctor`.
 
 L'API locale restituisce JSON. `GET /api/bootstrap` fornisce il token per `X-SourcePilot-Token` richiesto da POST/PATCH/DELETE. Gli errori di validazione sono 422, input non accettabili 400, richieste troppo grandi 413. I payload JSON sono limitati a 64 KiB prima del parsing.
 
 | Operazione | Endpoint |
 | --- | --- |
 | Importazione | `POST /api/import` (byte, header `X-File-Name` URL-encoded), `POST /api/import-url` (`{"url":"..."}`) |
-| Fonti | `GET /api/sources`, `/api/sources/{id}/versions`, `/api/sources/{id}/passages?version_id=...` |
+| Fonti | `GET /api/sources`, `DELETE /api/sources/{id}`, `/api/sources/{id}/versions`, `/api/sources/{id}/passages?version_id=...` |
 | Originale | `GET /api/sources/{id}/versions/{version}/original` |
 | Ricerca/confronto | `GET /api/search?q=...`, `GET /api/compare?left_id=1&right_id=2&q=...` |
-| Affermazioni | `GET/POST /api/claims`, `PATCH /api/claims/{id}`, `PATCH /api/claims/{id}/text` |
+| Affermazioni | `GET/POST /api/claims` (supporta `?status=...`), `DELETE /api/claims/{id}`, `PATCH /api/claims/{id}`, `PATCH /api/claims/{id}/text` |
 | Prove/revisioni | `POST /api/claims/{id}/evidence`, `DELETE /api/claims/{id}/evidence/{passage}`, `GET /api/claims/{id}/revisions` |
 | Manutenzione | `GET /api/workspace/health`, `POST /api/workspace/backup` |
 | AI | `GET /api/ai/status`, `POST /api/ai/index`, `/api/ai/search`, `/api/ai/sources/{id}/suggest`, `/api/ai/assess` |
 | Esecuzioni AI | `GET /api/ai/runs/{id}`, `POST /api/ai/runs/{id}/accept/{index}` (indice da 0) |
-| Report | `GET /api/report.md`, `GET /api/report.pdf` |
+| Report | `GET /api/report.md`, `GET /api/report.pdf`, `GET /api/report.json` |
 
 ### Problemi comuni
 
@@ -109,9 +114,9 @@ L'API locale restituisce JSON. `GET /api/bootstrap` fornisce il token per `X-Sou
 
 SourcePilot 1.0 supports Python 3.11–3.14. Windows: run `./run.ps1`. Linux/macOS: create/activate a virtual environment, install with `python -m pip install -c requirements.lock -e .`, and run `sourcepilot serve --workspace ./workspace`. Open [127.0.0.1:8765](http://127.0.0.1:8765); stop with `Ctrl+C`. `--workspace` and `--port` choose data location and port. CI covers Windows/Linux on Python 3.11/3.14; macOS is not in the matrix.
 
-Import selected files/folders or public standard-port HTTP/HTTPS URLs. Supported: UTF-8 TXT/Markdown/HTML, DOCX paragraphs/tables, and text-selectable PDFs, up to 20 MB each; DOCX expansion is capped at 80 MB. No OCR, legacy `.doc`, encrypted PDFs, or browser-rendered/login-only pages. Originals, source versions, full hashes, and passage locators are retained. Reimporting changed content under the same origin creates a version; existing citations keep their original passage IDs.
+Import selected files/folders or public standard-port HTTP/HTTPS URLs. Supported: UTF-8 TXT/Markdown/HTML, DOCX paragraphs/tables, text-selectable PDFs, CSV, and TSV, up to 20 MB each; DOCX expansion is capped at 80 MB. No OCR, legacy `.doc`, encrypted PDFs, or browser-rendered/login-only pages. Originals, source versions, full hashes, and passage locators are retained. Reimporting changed content under the same origin creates a version; existing citations keep their original passage IDs. Controlled deletion safely removes unused sources and claims.
 
-Text search uses SQLite FTS5 with AND over up to 12 query terms, latest versions by default. Select history explicitly to include older versions. Create claims from passages, attach supporting/challenging/contextual evidence, and review as approved, uncertain, or rejected. Statement/evidence changes reset review; every claim retains at least one evidence link. Side-by-side comparison groups passages by source. Default Markdown/PDF reports include approved and uncertain claims; `--include-proposed` adds drafts explicitly. PDF uses the embedded Vera font and errors on unsupported glyphs; Markdown retains Unicode. Exports may include local paths and excerpts.
+Text search uses SQLite FTS5 with AND over up to 12 query terms, latest versions by default. Select history explicitly to include older versions. Create claims from passages, attach supporting/challenging/contextual evidence, and review as approved, uncertain, or rejected. Statement/evidence changes reset review; every claim retains at least one evidence link. Side-by-side comparison groups passages by source. Default Markdown, PDF, and JSON reports include approved and uncertain claims; `--include-proposed` adds drafts explicitly. PDF uses the embedded Vera font and errors on unsupported glyphs; Markdown and JSON retain Unicode. Exports may include local paths and excerpts.
 
 Optional AI requires your separately installed Ollama runtime and local models with `completion`/`embedding` capabilities. Use `--model NAME`, `--embedding-model NAME`, and optionally `--ollama-url` (loopback only), or `SOURCEPILOT_AI_MODEL`, `SOURCEPILOT_EMBEDDING_MODEL`, `SOURCEPILOT_OLLAMA_URL`. The PowerShell launcher accepts `-Model`/`-EmbeddingModel`. SourcePilot never downloads models. Check model licenses separately.
 

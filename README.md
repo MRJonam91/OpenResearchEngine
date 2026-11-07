@@ -28,11 +28,12 @@ Su Linux/macOS: crea e attiva un ambiente virtuale Python, esegui `python -m pip
 
 ### Funzioni 1.0
 
-- Importa TXT, Markdown, HTML, DOCX e PDF con testo selezionabile (massimo 20 MB), file o cartelle scelti nel browser, oppure URL pubblici HTTP/HTTPS.
+- Importa TXT, Markdown, HTML, DOCX, PDF con testo selezionabile, CSV e TSV (massimo 20 MB per file), file o cartelle scelti nel browser, oppure URL pubblici HTTP/HTTPS.
 - Conserva originali e versioni; mostra i passaggi con posizione, data di importazione e hash SHA-256. La ricerca testuale SQLite FTS5 usa la versione più recente, con opzione esplicita per cercare nella cronologia.
 - Permette di creare, correggere e revisionare affermazioni, collegare prove che supportano/contrastano/contestualizzano, e confrontare due fonti affiancate.
-- Esporta report Markdown e PDF con citazioni a livello di passaggio. Solo affermazioni approvate o incerte entrano nel report predefinito.
-- Espone API locali e CLI per automazioni personali.
+- Supporta la cancellazione controllata di fonti e affermazioni via UI, API e CLI con blocco di sicurezza se una fonte è usata in un'affermazione.
+- Esporta report Markdown, PDF e JSON con citazioni a livello di passaggio. Solo affermazioni approvate o incerte entrano nel report predefinito.
+- Espone API locali e CLI per automazioni personali, con comandi per ispezionare ed eliminare fonti e affermazioni filtrate per stato.
 - Aggiunge ricerca semantica, proposte di affermazioni e candidati disaccordi con Ollama locale opzionale; ogni citazione proposta deve corrispondere a un passaggio e a una citazione testuale esatta.
 - Controlla l'integrità e crea backup ZIP portabili con checksum e ripristino in una nuova cartella.
 
@@ -62,11 +63,12 @@ On Linux/macOS, create and activate a Python virtual environment, run `python -m
 
 ### Version 1.0 features
 
-- Imports TXT, Markdown, HTML, DOCX, and text-selectable PDF (20 MB per item), browser-selected files/folders, or public HTTP/HTTPS URLs.
+- Imports TXT, Markdown, HTML, DOCX, text-selectable PDF, CSV, and TSV (20 MB per item), browser-selected files/folders, or public HTTP/HTTPS URLs.
 - Retains originals and source versions; displays passage locators, import times, and SHA-256 hashes. SQLite FTS5 text search uses the latest version by default, with an explicit history option.
 - Creates, edits, and reviews claims; attaches supporting, challenging, or contextual evidence; compares two sources side by side.
-- Exports passage-cited Markdown and PDF reports. Only approved or uncertain claims appear by default.
-- Provides a local API and CLI for personal automation.
+- Provides controlled deletion for sources and claims via UI, API, and CLI, with referential protection if a source is referenced by claims.
+- Exports passage-cited Markdown, PDF, and JSON reports. Only approved or uncertain claims appear by default.
+- Provides a local API and CLI for personal automation, including commands to list, filter, and delete sources and claims.
 - Adds optional local Ollama semantic search, cited claim proposals, and candidate disagreements. Each model citation must identify a supplied passage and an exact quote.
 - Provides integrity diagnostics and portable checksummed ZIP backup/restore into a new directory.
 
