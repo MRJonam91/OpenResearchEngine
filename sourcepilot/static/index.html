@@ -11,7 +11,7 @@
   <header class="masthead">
     <div class="brand"><span class="brand-mark">SP</span><span>SourcePilot <small>1.0 · locale</small></span></div>
     <div class="workspace-path" id="workspace-path" title="Workspace locale">Caricamento workspace…</div>
-    <nav class="export-actions" aria-label="Workspace e report"><button id="check-workspace" type="button" class="ghost">Verifica dati</button><button id="backup-workspace" type="button" class="ghost">Backup</button><a class="export-link" href="/api/report.md" download="sourcepilot-report.md">Markdown</a><a class="export-link" href="/api/report.pdf" download="sourcepilot-report.pdf">PDF</a></nav>
+    <nav class="export-actions" aria-label="Workspace e report"><button id="check-workspace" type="button" class="ghost">Verifica dati</button><button id="backup-workspace" type="button" class="ghost">Backup</button><a class="export-link" href="/api/report.md" download="sourcepilot-report.md">Markdown</a><a class="export-link" href="/api/report.pdf" download="sourcepilot-report.pdf">PDF</a><a class="export-link" href="/api/report.json" download="sourcepilot-report.json">JSON</a></nav>
   </header>
   <main>
     <section class="intro" aria-labelledby="page-title">
@@ -21,11 +21,11 @@
     <section class="import-panel" aria-labelledby="import-title">
       <div class="section-index">01</div>
       <div class="import-body">
-        <div class="section-head"><h2 id="import-title">Importa fonti</h2><p>TXT, Markdown, HTML, DOCX e PDF con testo selezionabile · massimo 20 MB per file</p></div>
+        <div class="section-head"><h2 id="import-title">Importa fonti</h2><p>TXT, Markdown, HTML, DOCX, PDF, CSV, TSV · massimo 20 MB per file</p></div>
         <div class="import-actions">
           <button type="button" id="pick-files" class="primary">Scegli file</button>
           <button type="button" id="pick-folder">Scegli cartella</button>
-          <input id="file-input" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.pdf,.docx" hidden>
+          <input id="file-input" type="file" multiple accept=".txt,.md,.markdown,.html,.htm,.pdf,.docx,.csv,.tsv" hidden>
           <input id="folder-input" type="file" multiple webkitdirectory directory hidden>
           <form id="url-form" class="url-form"><label for="url-input">URL</label><input id="url-input" type="url" placeholder="https://…" required><button type="submit">Importa URL</button></form>
         </div>
@@ -46,7 +46,7 @@
         <div class="column-header"><span class="section-index">03</span><h2 id="passages-title">Passaggi</h2></div>
         <form id="search-form" class="search-form"><label class="visually-hidden" for="search-input">Cerca nei documenti</label><input id="search-input" type="search" maxlength="2000" placeholder="Cerca nei documenti"><label class="visually-hidden" for="search-mode">Tipo di ricerca</label><select id="search-mode"><option value="text">Testuale</option><option value="semantic" id="semantic-option" disabled>Semantica</option></select><button type="submit" class="primary">Cerca</button></form>
         <label class="history-toggle"><input id="include-history" type="checkbox"> Includi versioni precedenti nella ricerca</label>
-        <div id="version-controls" class="version-controls" hidden><label for="version-select">Versione della fonte</label><select id="version-select"></select><a id="original-link" href="#">Scarica originale</a></div>
+        <div id="version-controls" class="version-controls" hidden><label for="version-select">Versione della fonte</label><select id="version-select"></select><a id="original-link" href="#">Scarica originale</a><button id="delete-source-btn" type="button" class="ghost delete-btn">Elimina fonte</button></div>
         <details class="compare-panel"><summary>Confronta due fonti</summary><form id="compare-form"><label for="compare-left">Prima fonte</label><select id="compare-left" required></select><label for="compare-right">Seconda fonte</label><select id="compare-right" required></select><label for="compare-query">Termine di confronto</label><input id="compare-query" maxlength="2000" required placeholder="Es. stima, data, requisito"><button type="submit">Confronta</button><button type="button" id="assess-ai" disabled>Proponi possibili contraddizioni</button></form></details>
         <section id="analysis-results" class="analysis-results" aria-label="Proposte AI da verificare" hidden></section>
         <div id="passage-context" class="context-line">Seleziona una fonte o cerca una parola.</div>

@@ -81,9 +81,13 @@ def main(argv: list[str] | None = None) -> int:
     remove_parser = common("remove-evidence")
     remove_parser.add_argument("claim_id", type=_identifier)
     remove_parser.add_argument("passage_id", type=_identifier)
+    delete_source_parser = common("delete-source")
+    delete_source_parser.add_argument("source_id", type=_identifier)
+    delete_claim_parser = common("delete-claim")
+    delete_claim_parser.add_argument("claim_id", type=_identifier)
     report_parser = common("report")
     report_parser.add_argument("--output", type=Path, required=True)
-    report_parser.add_argument("--format", choices=["markdown", "pdf"])
+    report_parser.add_argument("--format", choices=["markdown", "pdf", "json"])
     report_parser.add_argument("--include-proposed", action="store_true")
     common("doctor")
     backup_parser = common("backup")
@@ -182,12 +186,22 @@ def main(argv: list[str] | None = None) -> int:
             _print(research.add_evidence(args.claim_id, args.passage_id, args.stance))
         elif args.command == "remove-evidence":
             _print(research.remove_evidence(args.claim_id, args.passage_id))
+        elif args.command == "delete-source":
+            _print(store.delete_source(args.source_id))
+        elif args.command == "delete-claim":
+            _print(research.delete_claim(args.claim_id))
         elif args.command == "report":
             args.output.parent.mkdir(parents=True, exist_ok=True)
-            format_name = args.format or ("pdf" if args.output.suffix.lower() == ".pdf" else "markdown")
+            suffix = args.output.suffix.lower()
+            default_format = "pdf" if suffix == ".pdf" else ("json" if suffix == ".json" else "markdown")
+            format_name = args.format or default_format
             if format_name == "pdf":
                 rendered = research.render_pdf_report(args.include_proposed)
                 with args.output.open("xb") as output:
+                    output.write(rendered)
+            elif format_name == "json":
+                rendered = research.render_json_report(args.include_proposed)
+                with args.output.open("x", encoding="utf-8") as output:
                     output.write(rendered)
             else:
                 rendered = research.render_report(args.include_proposed)

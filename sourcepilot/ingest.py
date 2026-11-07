@@ -13,13 +13,13 @@ from zipfile import BadZipFile, ZipFile
 from .network import fetch_public
 
 MAX_IMPORT_BYTES = 20 * 1024 * 1024
-SUPPORTED_EXTENSIONS = {".txt", ".md", ".markdown", ".html", ".htm", ".pdf", ".docx"}
+SUPPORTED_EXTENSIONS = {".txt", ".md", ".markdown", ".html", ".htm", ".pdf", ".docx", ".csv", ".tsv"}
 MAX_DOCUMENT_EXPANDED_BYTES = 80 * 1024 * 1024
 
 
 def fetch_url(url: str) -> tuple[str, bytes, str]:
     data, media_type, final_url = fetch_public(url, MAX_IMPORT_BYTES)
-    suffix = {"text/html": ".html", "application/xhtml+xml": ".html", "text/plain": ".txt", "application/pdf": ".pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx"}.get(media_type)
+    suffix = {"text/html": ".html", "application/xhtml+xml": ".html", "text/plain": ".txt", "text/csv": ".csv", "text/tab-separated-values": ".tsv", "application/pdf": ".pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx"}.get(media_type)
     if suffix is None:
         raise ValueError(f"Unsupported URL content type: {media_type}")
     host = urlsplit(final_url).hostname or "webpage"

@@ -359,6 +359,22 @@ function review() {
     } catch (error) { message(error.message, true); }
   };
   panel.append(history);
+  const deleteBtn = el("button", "ghost delete-btn", "Elimina affermazione");
+  deleteBtn.type = "button";
+  deleteBtn.onclick = async () => {
+    if (!confirm(`Vuoi davvero eliminare l'affermazione "${claim.text}"?`)) return;
+    deleteBtn.disabled = true;
+    try {
+      await api(`/api/claims/${claim.id}`, { method: "DELETE" });
+      s.claim = null;
+      await refresh();
+      collection();
+      passages();
+      review();
+      message("Affermazione eliminata.");
+    } catch (error) { message(error.message, true); deleteBtn.disabled = false; }
+  };
+  panel.append(deleteBtn);
 }
 
 async function upload(files) {
@@ -437,6 +453,24 @@ $("url-form").onsubmit = async event => {
   finally { submit.disabled = false; }
 };
 
+$("delete-source-btn").onclick = async () => {
+  if (!s.source) return;
+  const source = s.sources.find(item => item.source_id === s.source);
+  if (!source) return;
+  if (!confirm(`Vuoi davvero eliminare la fonte "${source.title}"?`)) return;
+  try {
+    await api(`/api/sources/${s.source}`, { method: "DELETE" });
+    s.source = null;
+    s.passages = [];
+    s.versions = [];
+    $("version-controls").hidden = true;
+    $("passage-context").textContent = "Fonte eliminata.";
+    await refresh();
+    collection();
+    passages();
+    message("Fonte eliminata con successo.");
+  } catch (error) { message(error.message, true); }
+};
 $("refresh-ai").onclick = checkAI;
 $("index-ai").onclick = () => runAI("Indicizzazione locale in corso…", async () => {
   const result = await api("/api/ai/index", {method:"POST", json:{limit:100, include_history:$("include-history").checked}});

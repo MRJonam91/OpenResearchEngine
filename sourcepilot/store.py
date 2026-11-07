@@ -243,3 +243,51 @@ class ResearchStore:
                 (int(include_history),),
             ).fetchall()
             return [dict(row) for row in rows]
+
+    def delete_source(self, source_id: int) -> dict:
+        with self.connect() as db:
+            row = db.execute("SELECT id, title FROM source WHERE id = ?", (source_id,)).fetchone()
+            if row is None:
+                raise ValueError("Source does not exist")
+            claims_count = db.execute(
+                "SELECT COUNT(DISTINCT el.claim_id) FROM evidence_link el "
+                "JOIN passage p ON p.id = el.passage_id "
+                "JOIN source_version sv ON sv.id = p.version_id "
+                "WHERE sv.source_id = ?",
+                (source_id,),
+            ).fetchone()[0]
+            if claims_count > 0:
+                raise ValueError(f"Cannot delete source: referenced by {claims_count} claim(s)")
+
+            db.execute(
+                "DELETE FROM embedding WHERE passage_id IN ("
+                "SELECT p.id FROM passage p JOIN source_version sv ON sv.id = p.version_id WHERE sv.source_id = ?)",
+                (source_id,),
+            )
+            db.execute(
+                "DELETE FROM passage_fts WHERE passage_id IN ("
+                "SELECT p.id FROM passage p JOIN source_version sv ON sv.id = p.version_id WHERE sv.source_id = ?)",
+                (source_id,),
+            )
+            db.execute(
+                "DELETE FROM passage WHERE version_id IN ("
+                "SELECT id FROM source_version WHERE source_id = ?)",
+                (source_id,),
+            )
+            sha_list = [r[0] for r in db.execute("SELECT sha256 FROM source_version WHERE source_id = ?", (source_id,)).fetchall()]
+            db.execute("DELETE FROM source_version WHERE source_id = ?", (source_id,))
+            db.execute("DELETE FROM source WHERE id = ?", (source_id,))
+
+            for digest in sha_list:
+                remaining = db.execute("SELECT COUNT(*) FROM source_version WHERE sha256 = ?", (digest,)).fetchone()[0]
+                if remaining == 0:
+                    obj_path = self.objects / digest[:2] / digest
+                    if obj_path.is_file():
+                        try:
+                            obj_path.unlink()
+                            parent = obj_path.parent
+                            if parent.is_dir() and not any(parent.iterdir()):
+                                parent.rmdir()
+                        except OSError:
+                            pass
+            return {"deleted": True, "source_id": source_id}

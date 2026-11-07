@@ -103,6 +103,8 @@ h2{font-size:1rem;letter-spacing:-.025em;margin:0;font-weight:700}
 .revision-entry{border-top:1px solid var(--line);padding:.6rem 0;font-size:.7rem;line-height:1.5}
 .revision-entry strong,.revision-entry span,.revision-entry small{display:block}
 .minor-note{color:var(--muted);font-size:.72rem;line-height:1.5;margin:.7rem 0}
+.delete-btn{color:#9a1b1b;margin-top:.8rem}
+.delete-btn:hover{border-color:#9a1b1b;color:#9a1b1b}
 footer{border-top:1px solid var(--ink);padding:1.1rem 2.2rem;color:var(--muted);font-size:.7rem;line-height:1.5}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:680px){.url-form{display:grid;grid-template-columns:auto minmax(0,1fr);min-width:0}.url-form button{grid-column:1/-1}.url-form input{width:100%!important}}

@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.1.0b1 — 2026-11-07
+
+### Italiano
+
+- **Cancellazione controllata**: aggiunta eliminazione sicura di fonti e affermazioni via UI, API REST (`DELETE /api/sources/{id}`, `DELETE /api/claims/{id}`) e CLI (`delete-source`, `delete-claim`). Protezione referenziale con rifiuto della cancellazione se una fonte ha passaggi usati in affermazioni attive.
+- **Esportazione JSON**: aggiunto formato strutturato JSON per report di ricerca verificabili (`/api/report.json` e `sourcepilot report --format json`), oltre a Markdown e PDF.
+- **Ingestione CSV e TSV**: supporto diretto per importazione di file tabellari delimitati con locatori di riga tracciabili.
+- **Ottimizzazioni query e filtri**: eliminato overhead di connessioni multiple in `list_claims`, aggiunto filtro per stato di revisione via API (`?status=...`) e CLI (`sourcepilot claims --status ...`), e aggiunto indice `claim_status`.
+- **Nuovi comandi CLI**: aggiunti `sources`, `claims`, `delete-source`, `delete-claim`.
+- **Raffinamento diagnostica**: aggiunto breakdown per stato di revisione (`claim_statuses`) nei controlli di integrità del workspace.
+
+### English
+
+- **Controlled Deletion**: added safe deletion of sources and claims via UI, REST API (`DELETE /api/sources/{id}`, `DELETE /api/claims/{id}`), and CLI (`delete-source`, `delete-claim`). Referential safety prevents deleting sources referenced by existing claims.
+- **JSON Report Export**: added structured JSON report export (`/api/report.json` and `sourcepilot report --format json`) alongside Markdown and PDF.
+- **CSV & TSV Ingestion**: added direct support for delimited tabular files with locatable line passages.
+- **Query Optimization & Status Filtering**: resolved connection overhead in `list_claims`, added status filtering in API and CLI, and added `claim_status` index.
+- **New CLI Commands**: added `sources`, `claims`, `delete-source`, `delete-claim`.
+- **Enhanced Diagnostics**: added claim status distribution breakdown (`claim_statuses`) to workspace diagnostics.
+
 ## 1.0.0 — 2026-10-24
 
 ### Italiano

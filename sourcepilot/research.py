@@ -224,6 +224,17 @@ class ResearchService:
                 ids = [row["id"] for row in db.execute("SELECT id FROM claim ORDER BY id DESC")]
             return [self._fetch_claim_with_db(db, claim_id) for claim_id in ids]
 
+    def delete_claim(self, claim_id: int) -> dict:
+        with self.store.connect() as db:
+            prior = db.execute("SELECT * FROM claim WHERE id = ?", (claim_id,)).fetchone()
+            if prior is None:
+                raise ValueError("Claim does not exist")
+            db.execute("DELETE FROM evidence_link WHERE claim_id = ?", (claim_id,))
+            db.execute("DELETE FROM claim_revision WHERE claim_id = ?", (claim_id,))
+            db.execute("DELETE FROM accepted_suggestion WHERE claim_id = ?", (claim_id,))
+            db.execute("DELETE FROM claim WHERE id = ?", (claim_id,))
+            return {"deleted": True, "claim_id": claim_id}
+
     def render_report(self, include_proposed: bool = False) -> str:
         from .report import render_report
 
@@ -233,3 +244,8 @@ class ResearchService:
         from .report import render_pdf_report
 
         return render_pdf_report(self.list_claims(), include_proposed)
+
+    def render_json_report(self, include_proposed: bool = False) -> str:
+        from .report import render_json_report
+
+        return render_json_report(self.list_claims(), include_proposed)

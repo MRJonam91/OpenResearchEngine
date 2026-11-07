@@ -111,9 +111,13 @@ def create_app(workspace: str | Path, *, model: str | None = None, embedding_mod
     def passages(source_id: RouteIdentifier, version_id: RouteIdentifier | None = None):
         return store.list_passages(source_id, version_id)
 
-    @app.get("/api/sources/{source_id}/versions")
+    @app.get("/api/sources/{source_id}/versions", response_model=None)
     def versions(source_id: RouteIdentifier):
         return store.list_versions(source_id)
+
+    @app.delete("/api/sources/{source_id}", dependencies=[Depends(require_write_token)])
+    def delete_source(source_id: RouteIdentifier):
+        return store.delete_source(source_id)
 
     @app.get("/api/sources/{source_id}/versions/{version_id}/original")
     def original(source_id: RouteIdentifier, version_id: RouteIdentifier):
@@ -190,6 +194,10 @@ def create_app(workspace: str | Path, *, model: str | None = None, embedding_mod
     def add_evidence(claim_id: RouteIdentifier, payload: EvidenceInput):
         return research.add_evidence(claim_id, payload.passage_id, payload.stance)
 
+    @app.delete("/api/claims/{claim_id}", dependencies=[Depends(require_write_token)])
+    def delete_claim(claim_id: RouteIdentifier):
+        return research.delete_claim(claim_id)
+
     @app.delete("/api/claims/{claim_id}/evidence/{passage_id}", dependencies=[Depends(require_write_token)])
     def remove_evidence(claim_id: RouteIdentifier, passage_id: RouteIdentifier):
         return research.remove_evidence(claim_id, passage_id)
@@ -200,6 +208,14 @@ def create_app(workspace: str | Path, *, model: str | None = None, embedding_mod
             research.render_report(include_proposed),
             media_type="text/markdown; charset=utf-8",
             headers={"Content-Disposition": 'attachment; filename="sourcepilot-report.md"'},
+        )
+
+    @app.get("/api/report.json")
+    def report_json(include_proposed: bool = False):
+        return PlainTextResponse(
+            research.render_json_report(include_proposed),
+            media_type="application/json; charset=utf-8",
+            headers={"Content-Disposition": 'attachment; filename="sourcepilot-report.json"'},
         )
 
     @app.get("/api/report.pdf")

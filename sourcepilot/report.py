@@ -18,7 +18,25 @@ from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer
 
 
 def _escape(value: str) -> str:
-    return re.sub(r"([\\`*_\[\]<>|])", r"\\\1", value).replace("\n", " ")
+    return re.sub(r"([\\`*_\[\]<>|])", r"\\\1", value or "").replace("\n", " ")
+
+
+def render_json_report(claims: list[dict], include_proposed: bool = False) -> str:
+    import json
+    from datetime import datetime, timezone
+
+    included = [
+        claim for claim in reversed(claims)
+        if claim["status"] in {"approved", "uncertain"}
+        or (include_proposed and claim["status"] == "proposed")
+    ]
+    report_data = {
+        "title": "SourcePilot Research Report",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "total_claims": len(included),
+        "claims": included,
+    }
+    return json.dumps(report_data, ensure_ascii=False, indent=2)
 
 
 def render_report(claims: list[dict], include_proposed: bool = False) -> str:
@@ -71,10 +89,10 @@ def _pdf_font() -> None:
 def _check_pdf_glyphs(claims: list[dict]) -> None:
     glyphs = pdfmetrics.getFont("SourcePilotVera").face.charToGlyph
     for claim in claims:
-        values = [claim["text"], claim["note"]]
+        values = [claim["text"] or "", claim.get("note") or ""]
         values.extend(str(value) for value in claim.get("provenance", {}).values())
         for evidence in claim["evidence"]:
-            values.extend(str(evidence[key]) for key in ("text", "title", "origin", "locator"))
+            values.extend(str(evidence[key] or "") for key in ("text", "title", "origin", "locator"))
         for value in values:
             for character in value:
                 if character not in "\r\n\t" and ord(character) not in glyphs:
